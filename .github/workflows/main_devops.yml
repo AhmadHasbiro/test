@@ -4,34 +4,29 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Deploy Static Website to Azure Web App
+name: Azure Login Example
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+
+permissions:
+  id-token: write
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest  # Specify Windows OS
 
     steps:
-      # Step 1: Checkout the code
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # Step 2: Login to Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_10391F41470247B7ADBE05E8802CDB24 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D579B6B48C0D440188A32310B23AB286 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_826D27CAD0FE4FB58E50A58506E52736 }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Step 3: Deploy to Azure Web App
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'devops' # Your Azure Web App name
-          slot-name: 'Production'
-          package: '.'
+      - name: Set Azure Cloud
+        run: |
+          az cloud set -n azurecloud
